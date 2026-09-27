@@ -487,3 +487,5 @@ export default App;
 // refactored chapters out
 
 // added entanglement section
+
+// added visual builder
