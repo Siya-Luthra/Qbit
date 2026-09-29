@@ -491,3 +491,5 @@ export default App;
 // added visual builder
 
 // added ai tutor
+
+// refactored chapters out
