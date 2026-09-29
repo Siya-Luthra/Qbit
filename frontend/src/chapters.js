@@ -792,3 +792,5 @@ print("Ansatz Output Distribution:", counts)`
 // SVG fix
 
 // shors and grovers
+
+// qkd and vqe
