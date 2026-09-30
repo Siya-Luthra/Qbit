@@ -67,7 +67,7 @@ async def chat_with_ai(request: ChatRequest):
     def generate():
         try:
             response = client.models.generate_content_stream(
-                model='gemini-1.5-flash', 
+                model='gemini-3.5-flash', 
                 contents=prompt
             )
             for chunk in response:
