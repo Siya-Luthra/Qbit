@@ -10,6 +10,17 @@ QBit is a comprehensive, interactive quantum computing learning platform. It com
 - **AI Tutor**: Integrated AI assistant that can help debug your code, explain quantum concepts, and answer questions.
 - **Real-time Simulation**: Uses Qiskit `StatevectorSampler` on the backend to simulate your circuits and return probability distributions, statevectors, and Bloch sphere visualizations.
 
+## Prerequisites
+
+To use the AI Tutor feature, you need a free Google Gemini API Key.
+
+1. Get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. Set it as an environment variable before running the servers:
+   - **Windows (PowerShell):** `$env:GEMINI_API_KEY="your-api-key"`
+   - **Linux/Mac:** `export GEMINI_API_KEY="your-api-key"`
+
+*(Note: Never commit your actual API key directly to your code or README!)*
+
 ## Quick Start
 
 You can launch both the frontend and backend servers simultaneously using the provided startup scripts.
