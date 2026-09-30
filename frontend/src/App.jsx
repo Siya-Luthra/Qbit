@@ -32,7 +32,8 @@ function App() {
     setAiErrorHelp(null);
     setIsAiThinking(false);
     try {
-      const response = await fetch('http://localhost:8000/run-quantum', {
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/run-quantum`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, engine: selectedFramework })
@@ -70,7 +71,8 @@ ${code}
 Please explain what went wrong and provide the corrected code. Keep it brief.`;
         
         try {
-          const chatRes = await fetch('http://localhost:8000/chat', {
+          const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+          const chatRes = await fetch(`${API_BASE_URL}/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: debugPrompt })
@@ -98,7 +100,8 @@ Please explain what went wrong and provide the corrected code. Keep it brief.`;
     setChatInput('');
 
     try {
-      const response = await fetch('http://localhost:8000/chat', {
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: currentInput })
