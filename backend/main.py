@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from google import genai
 from qiskit.quantum_info import Statevector # Moved here
-
 app = FastAPI()
 
 @app.get("/")
@@ -62,12 +62,18 @@ async def run_quantum(request: CodeRequest):
 
 @app.post("/chat")
 async def chat_with_ai(request: ChatRequest):
-    try:
-        prompt = f"You are a Quantum Computing Tutor. Answer simply. User says: {request.message}"
-        response = client.models.generate_content(
-            model='gemini-3.5-flash', 
-            contents=prompt
-        )
-        return {"reply": response.text}
-    except Exception as e:
-        return {"reply": f"Error: {str(e)}"}
+    prompt = f"You are a Quantum Computing Tutor. Answer simply. User says: {request.message}"
+    
+    def generate():
+        try:
+            response = client.models.generate_content_stream(
+                model='gemini-2.5-flash', 
+                contents=prompt
+            )
+            for chunk in response:
+                if chunk.text:
+                    yield chunk.text
+        except Exception as e:
+            yield f"Error: {str(e)}"
+            
+    return StreamingResponse(generate(), media_type="text/plain")

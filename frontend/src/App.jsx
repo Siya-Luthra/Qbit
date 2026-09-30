@@ -77,8 +77,19 @@ Please explain what went wrong and provide the corrected code. Keep it brief.`;
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: debugPrompt })
           });
-          const chatData = await chatRes.json();
-          setAiErrorHelp(chatData.reply);
+          const reader = chatRes.body.getReader();
+          const decoder = new TextDecoder("utf-8");
+          let done = false;
+          let replyText = "";
+          
+          while (!done) {
+            const { value, done: readerDone } = await reader.read();
+            done = readerDone;
+            if (value) {
+              replyText += decoder.decode(value, { stream: true });
+              setAiErrorHelp(replyText);
+            }
+          }
         } catch (chatErr) {
           setAiErrorHelp("Failed to get AI assistance for this error.");
         } finally {
@@ -106,10 +117,28 @@ Please explain what went wrong and provide the corrected code. Keep it brief.`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: currentInput })
       });
-      const data = await response.json();
-      setChatMessages([...newMessages, { role: 'ai', content: data.reply }]);
+      
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+      let replyText = "";
+      
+      setChatMessages(prev => [...prev, { role: 'ai', content: "" }]);
+      
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          replyText += decoder.decode(value, { stream: true });
+          setChatMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = { role: 'ai', content: replyText };
+            return updated;
+          });
+        }
+      }
     } catch (err) {
-      setChatMessages([...newMessages, { role: 'ai', content: 'Error connecting to backend.' }]);
+      setChatMessages(prev => [...prev, { role: 'ai', content: 'Error connecting to backend.' }]);
     }
   };
 
